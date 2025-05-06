@@ -14,6 +14,12 @@ Um sistema completo para gerenciamento de animais de estimação, incluindo cada
 ✔ **Relatórios**: Exportação em PDF para veterinários  
 ✔ **Admin**: Painel para gerenciamento de raças e usuários  
 
+## Diagrama UML
+<a href="https://lucid.app/lucidchart/d1b30041-383d-41c0-8a13-b37fa799b342/edit?invitationId=inv_91fb7c69-8510-4c5b-843c-db9579347cc5&page=0_0" target="_blank">Diagrama UML adaptado para python</a>
+
+## Historias de usuário
+<a href="https://miro.com/app/board/uXjVK1MCAho=/" target="_blank">Hitorias de usuário</a>
+
 ## 🛠 Tecnologias  
 | Área         | Tecnologias |  
 |--------------|------------|  
