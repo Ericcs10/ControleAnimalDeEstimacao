@@ -6,14 +6,11 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     ports:
-      - "8001:8000"
+      - "8001:8000"  # Porta externa:interna ajustada
+    env_file:
+      - .env  # Usa variáveis do arquivo .env
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=root
-      - MONGO_INITDB_ROOT_PASSWORD=example
-      - MONGO_HOST=mongo
-      - MONGO_PORT=27017
-      - MONGO_DB=petdb
-      - PYTHON_VERSION=3.12.3
+      - MONGO_URL=mongodb://root:example@mongo:27017/petdb?authSource=admin
     volumes:
       - ./backend/app:/app/app
       - backend-python-cache:/root/.cache/pip
@@ -31,9 +28,13 @@ services:
       - "3000:3000"
     volumes:
       - ./frontend:/app
-      - /app/node_modules
+      - frontend-node-modules:/app/node_modules
     env_file:
-      - .env
+      - .env  # Carrega variáveis do frontend
+    depends_on:
+      - backend
+    networks:
+      - pets-network
 
   mongo:
     image: mongo:6.0
@@ -42,8 +43,6 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: example
     volumes:
       - mongo_data:/data/db
-    ports:
-      - "27017:27017"
     restart: unless-stopped
     networks:
       - pets-network
