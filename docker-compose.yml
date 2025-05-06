@@ -24,20 +24,18 @@ services:
       - pets-network
 
   frontend:
-    build: 
-      context:
+    build:
+      context: ./frontend  # Caminho relativo para a pasta do frontend
       dockerfile: Dockerfile
       args:
         - REACT_APP_API_BASE_URL=${REACT_APP_API_BASE_URL}
     ports:
       - "3000:3000"
-    environment:
-      - NODE_ENV=production
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000"]
-      interval: 30s
-      timeout: 3s
-      retries: 3
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    env_file:
+      - .env
 
   mongo:
     image: mongo:6.0
