@@ -25,19 +25,19 @@ services:
 
   frontend:
     build: 
-      context: ./frontend
+      context:
       dockerfile: Dockerfile
+      args:
+        - REACT_APP_API_BASE_URL=${REACT_APP_API_BASE_URL}
     ports:
-      - "3000:80"
-    volumes:
-      - ./frontend/src:/app/src
-      - ./frontend/public:/app/public
-      - frontend-node-modules:/app/node_modules
-    depends_on:
-      - backend
-    restart: unless-stopped
-    networks:
-      - pets-network
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
 
   mongo:
     image: mongo:6.0
