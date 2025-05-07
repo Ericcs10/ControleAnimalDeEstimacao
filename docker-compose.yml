@@ -16,7 +16,7 @@ services:
       - backend-python-cache:/root/.cache/pip
     depends_on:
       - mongo
-    restart: unless-stopped
+    restart: "no"
     networks:
       - pets-network
 
@@ -74,7 +74,7 @@ volumes:
   mongo_data:
   backend-python-cache:
   frontend-node-modules:
-  
+
 networks:
   pets-network:
     driver: bridge
