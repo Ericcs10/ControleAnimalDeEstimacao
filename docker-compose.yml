@@ -74,10 +74,7 @@ volumes:
   mongo_data:
   backend-python-cache:
   frontend-node-modules:
-  ./backend/app:/app/app:
-  ./backend/tests:/app/tests:
-  - backend-p:
-
+  
 networks:
   pets-network:
     driver: bridge
