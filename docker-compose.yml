@@ -6,9 +6,9 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     ports:
-      - "8001:8000"  # Porta externa:interna ajustada
+      - "8001:8000"  
     env_file:
-      - .env  # Usa variáveis do arquivo .env
+      - .env  
     environment:
       - MONGO_URL=mongodb://root:example@mongo:27017/petdb?authSource=admin
     volumes:
@@ -30,7 +30,7 @@ services:
       - ./frontend:/app
       - frontend-node-modules:/app/node_modules
     env_file:
-      - .env  # Carrega variáveis do frontend
+      - .env  
     depends_on:
       - backend
     networks:
@@ -61,10 +61,22 @@ services:
     networks:
       - pets-network
 
+  tests:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    environment:
+      - MONGO_URL=mongodb://root:example@mongo:27017/testdb?authSource=admin    
+
 volumes:
   mongo_data:
   backend-python-cache:
   frontend-node-modules:
+  ./backend/app:/app/app:
+  ./backend/tests:/app/tests:
+  - backend-p:
 
 networks:
   pets-network:
