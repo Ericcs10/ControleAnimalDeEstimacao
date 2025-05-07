@@ -68,11 +68,12 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    command: tail -f /dev/null  # <-- Mantém o container ativo
+    command: tail -f /dev/null
     env_file:
       - .env
     environment:
       - MONGO_URL=mongodb://root:example@mongo:27017/testdb?authSource=admin
+      - PYTHONPATH=/app
     volumes:
       - ./backend:/app
     depends_on:
