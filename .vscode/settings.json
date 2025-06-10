@@ -1,0 +1,7 @@
+{
+  "python.linting.pylintEnabled": true,
+  "python.linting.enabled": true,
+  "python.pythonPath": "venv/bin/python",  // Se usar ambiente virtual
+  "editor.formatOnSave": true,
+  "python.formatting.provider": "black"    // Opcional (se usar Black)
+}
