@@ -1,17 +1,17 @@
 from enum import Enum
 
+class Intervalo(str, Enum):
+    DIAS = "Dias"
+    MESES = "Meses"
+    ANOS = "Anos"
+
 class Sexo(str, Enum):
-    FEMININO = "FEMININO"
-    MASCULINO = "MASCULINO"
-    OUTRO = "OUTRO"
+    FEMININO = "Feminino"
+    MASCULINO = "Masculino"
+    OUTRO = "Outro"
 
 class Especie(str, Enum):
-    CAO = "CÃO"
-    FELINO = "FELINO"
-    AVE = "AVE"
-    ROEDOR = "ROEDOR"
-
-class Intervalo(str, Enum):
-    DIAS = "DIAS"
-    MESES = "MESES"
-    ANOS = "ANOS"
+    CANINO = "Canino"
+    FELINO = "Felino"
+    AVE = "Ave"
+    ROEDOR = "Roedor"

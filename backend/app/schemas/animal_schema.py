@@ -1,17 +1,18 @@
 from pydantic import BaseModel
-from typing import List, Optional
-from bson import ObjectId
+from typing import Optional
 from datetime import datetime
-from .enums import Sexo, Especie
+from bson import ObjectId
+from app.schemas.enums import Especie, Sexo
 
 class AnimalSchema(BaseModel):
-    nome: str
+    usuario_id: ObjectId
     especie: Especie
     raca: ObjectId
+    nome: str
     data_nascimento: datetime
     sexo: Sexo
-    usuario_id: ObjectId
-    vacinas: Optional[List[ObjectId]] = []
+    data_criacao: Optional[datetime] = None
+    data_atualizacao: Optional[datetime] = None
 
     class Config:
         json_encoders = {ObjectId: str}

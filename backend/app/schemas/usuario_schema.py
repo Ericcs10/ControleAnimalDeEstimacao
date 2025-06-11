@@ -1,17 +1,16 @@
 from pydantic import BaseModel, EmailStr
-from typing import List, Optional
-from bson import ObjectId
+from typing import Optional
 from datetime import datetime
-from .enums import Sexo
+from bson import ObjectId
 
 class UsuarioSchema(BaseModel):
-    nome: str
+    
     email: EmailStr
     cpf: str
-    senha: str
-    sexo: Sexo
-    data_nascimento: datetime
-    animais: Optional[List[ObjectId]] = []
+    telefone: str
+    senha_hash: str
+    data_criacao: Optional[datetime] = None
+    data_atualizacao: Optional[datetime] = None
 
     class Config:
         json_encoders = {ObjectId: str}

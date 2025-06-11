@@ -1,8 +1,13 @@
 from pydantic import BaseModel
-from .enums import Especie
+from app.schemas.enums import Especie
+from bson import ObjectId
 
 class RacaSchema(BaseModel):
     tipo: str
-    especie: Especie
+    pelagem: str
+    tamanho_pelagem: str
     temperamento: str
-    porte: str
+    especie: Especie
+
+    class Config:
+        json_encoders = {ObjectId: str}
