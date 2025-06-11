@@ -1,4 +1,4 @@
 from pydantic import BaseModel
 
 class HelloWorldResponse(BaseModel):
-    message: str = "Hello World"
+    message: str
