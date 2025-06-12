@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.routers import usuario_router  
+from app.routers import usuario_router  # import absoluto, funciona nesse contexto
 
 app = FastAPI(title="Controle de Pets")
 
