@@ -1,6 +1,4 @@
 from motor.motor_asyncio import AsyncIOMotorClient
-from .config import Settings
-
-settings = Settings()
+from .config import settings
 client = AsyncIOMotorClient(settings.mongodb_url)
 db = client[settings.mongodb_name]

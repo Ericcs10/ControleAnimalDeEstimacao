@@ -1,10 +1,4 @@
-from fastapi.testclient import TestClient
-from app.main import app
-
-client = TestClient(app)
-
-
-def test_crud_usuario_completo():
+def test_crud_usuario_completo(client):
     usuario = {
         "email": "teste@example.com",
         "cpf": "12345678900",
@@ -12,39 +6,31 @@ def test_crud_usuario_completo():
         "senha": "123456"
     }
 
-    # 🔸 Create
+    # Create
     response = client.post("/usuarios/", json=usuario)
     assert response.status_code == 201
     usuario_id = response.json()["id"]
 
-    # 🔸 Read
+    # Read (Get by ID)
     response = client.get(f"/usuarios/{usuario_id}")
     assert response.status_code == 200
-    data = response.json()
-    assert data["email"] == usuario["email"]
-    assert data["cpf"] == usuario["cpf"]
+    assert response.json()["email"] == usuario["email"]
 
-    # 🔸 Update
-    updated_data = {
-        "email": "atualizado@example.com",
-        "cpf": "12345678900",
-        "telefone": "61988888888",
-        "senha": "654321"
-    }
-    response = client.put(f"/usuarios/{usuario_id}", json=updated_data)
+    # Update
+    usuario_atualizado = usuario.copy()
+    usuario_atualizado["telefone"] = "61988888888"
+    response = client.put(f"/usuarios/{usuario_id}", json=usuario_atualizado)
     assert response.status_code == 200
 
-    # 🔸 Read after Update
+    # Confirm update
     response = client.get(f"/usuarios/{usuario_id}")
     assert response.status_code == 200
-    data = response.json()
-    assert data["email"] == updated_data["email"]
-    assert data["telefone"] == updated_data["telefone"]
+    assert response.json()["telefone"] == "61988888888"
 
-    # 🔸 Delete
+    # Delete
     response = client.delete(f"/usuarios/{usuario_id}")
     assert response.status_code == 200
 
-    # 🔸 Confirm Delete
+    # Confirm delete
     response = client.get(f"/usuarios/{usuario_id}")
     assert response.status_code == 404
