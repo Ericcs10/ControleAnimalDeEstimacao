@@ -1,24 +1,27 @@
 import asyncio
 from motor.motor_asyncio import AsyncIOMotorClient
 from datetime import datetime, timedelta
-from bson import ObjectId
-import random
+import random 
+from app.core.config import settings
 
 # Enums
-especies = ["Canino", "Felino", "Ave", "Roedor"]
-sexos = ["Masculino", "Feminino", "Outro"]
-intervalos = ["Dias", "Meses", "Anos"]
+ESPECIES = ["Canino", "Felino", "Ave", "Roedor"]
+SEXOS = ["Masculino", "Feminino", "Outro"]
+INTERVALOS = ["Dias", "Meses", "Anos"]
 
-# MongoDB client
-client = AsyncIOMotorClient("mongodb://root:example@localhost:27017", uuidRepresentation="standard")
-db = client["petdb"]
+# MongoDB client usando configuração
+client = AsyncIOMotorClient(settings.mongodb_url, uuidRepresentation="standard")
+db = client[settings.mongodb_name]
 
-async def popular_dados():
-    # Limpar coleções (opcional)
-    await db.usuarios.delete_many({})
-    await db.racas.delete_many({})
-    await db.animais_estimacao.delete_many({})
-    await db.vacinas.delete_many({})
+async def popular_dados(limpar_db=True):
+    if limpar_db:
+        print("🗑️ Limpando base...")
+        await db.usuarios.delete_many({})
+        await db.racas.delete_many({})
+        await db.animais_estimacao.delete_many({})
+        await db.vacinas.delete_many({})
+
+    print("🚀 Inserindo dados...")
 
     # Criar raças
     racas = []
@@ -28,7 +31,7 @@ async def popular_dados():
             "pelagem": random.choice(["Curta", "Longa", "Média"]),
             "tamanho_pelagem": random.choice(["Pequeno", "Grande"]),
             "temperamento": random.choice(["Calmo", "Agressivo", "Sociável"]),
-            "especie": random.choice(especies)
+            "especie": random.choice(ESPECIES)
         }
         raca_id = await db.racas.insert_one(raca)
         racas.append(raca_id.inserted_id)
@@ -52,11 +55,11 @@ async def popular_dados():
     for i in range(3):
         animal = {
             "usuario_id": random.choice(usuarios),
-            "especie": random.choice(especies),
+            "especie": random.choice(ESPECIES),
             "raca": random.choice(racas),
             "nome": f"Pet_{i}",
             "data_nascimento": datetime(2021, random.randint(1, 12), random.randint(1, 28)),
-            "sexo": random.choice(sexos),
+            "sexo": random.choice(SEXOS),
             "data_criacao": datetime.utcnow(),
             "data_atualizacao": datetime.utcnow()
         }
@@ -74,7 +77,7 @@ async def popular_dados():
             "laboratorio": "LabXYZ",
             "necessita_revacina": True,
             "periodo": 12,
-            "intervalo": random.choice(intervalos),
+            "intervalo": random.choice(INTERVALOS),
             "proxima_dose": data_vacina + timedelta(days=365)
         }
         await db.vacinas.insert_one(vacina)
