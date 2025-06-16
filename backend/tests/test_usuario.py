@@ -11,7 +11,7 @@ def test_crud_usuario_completo(client):
     assert response.status_code == 201
     usuario_id = response.json()["id"]
 
-    # Read (Get by ID)
+    # Read
     response = client.get(f"/usuarios/{usuario_id}")
     assert response.status_code == 200
     assert response.json()["email"] == usuario["email"]
@@ -22,7 +22,7 @@ def test_crud_usuario_completo(client):
     response = client.put(f"/usuarios/{usuario_id}", json=usuario_atualizado)
     assert response.status_code == 200
 
-    # Confirm update
+    # Verify update
     response = client.get(f"/usuarios/{usuario_id}")
     assert response.status_code == 200
     assert response.json()["telefone"] == "61988888888"
@@ -31,6 +31,6 @@ def test_crud_usuario_completo(client):
     response = client.delete(f"/usuarios/{usuario_id}")
     assert response.status_code == 200
 
-    # Confirm delete
+    # Verify deletion
     response = client.get(f"/usuarios/{usuario_id}")
     assert response.status_code == 404
