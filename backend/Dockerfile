@@ -1,4 +1,4 @@
-# Stage 1 - Instalação das dependências
+# Etapa de build
 FROM python:3.12-slim-bookworm AS builder
 
 WORKDIR /app
@@ -12,14 +12,16 @@ COPY requirements.txt .
 
 RUN pip install --user --no-warn-script-location -r requirements.txt
 
-# Stage 2 - Imagem final
+
+# Imagem final
 FROM python:3.12-slim-bookworm
 
 WORKDIR /app
 
 COPY --from=builder /root/.local /root/.local
-
-COPY . .  # <- Copia tudo da pasta backend /app/
+COPY ./app ./app
+COPY ./tests ./tests
+COPY requirements.txt .
 
 ENV PATH=/root/.local/bin:$PATH \
     PYTHONUNBUFFERED=1 \
