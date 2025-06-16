@@ -60,10 +60,27 @@ services:
     networks:
       - pets-network 
 
+  fakedata:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    command: python app/utils/fake_data.py
+    env_file:
+      - .env
+    environment:
+      - MONGO_URL=mongodb://root:example@mongo:27017/petdb?authSource=admin
+      - PYTHONPATH=/app
+    volumes:
+      - ./backend:/app
+    depends_on:
+      - mongo
+    networks:
+      - pets-network
+
 volumes:
   mongo_data:
 
 networks:
   pets-network:
-    driver: bridge 
+    driver: bridge
 
