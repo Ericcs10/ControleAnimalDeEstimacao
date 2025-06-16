@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   mongo:
     image: mongo:6.0
@@ -33,14 +35,25 @@ services:
     env_file:
       - .env
     environment:
-      - MONGO_URL=mongodb://root:example@mongo:27017/petdb?authSource=admin
-      - MONGO_DB=petdb
+      - MONGODB_URL=mongodb://root:example@mongo:27017/petdb?authSource=admin
+      - MONGODB_NAME=petdb
     volumes:
       - ./backend:/app
     depends_on:
       - mongo
     networks:
-      - pets-network 
+      - pets-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+    networks:
+      - pets-network
 
   tests:
     build:
@@ -50,15 +63,15 @@ services:
     env_file:
       - .env
     environment:
-      - MONGO_URL=mongodb://root:example@mongo:27017/testdb?authSource=admin
-      - MONGO_DB=petdb_test
+      - MONGODB_URL=mongodb://root:example@mongo:27017/testdb?authSource=admin
+      - MONGODB_NAME=petdb_test
       - PYTHONPATH=/app
     volumes:
       - ./backend:/app
     depends_on:
       - backend
     networks:
-      - pets-network 
+      - pets-network
 
   fakedata:
     build:
@@ -68,7 +81,7 @@ services:
     env_file:
       - .env
     environment:
-      - MONGO_URL=mongodb://root:example@mongo:27017/petdb?authSource=admin
+      - MONGODB_URL=mongodb://root:example@mongo:27017/petdb?authSource=admin
       - PYTHONPATH=/app
     volumes:
       - ./backend:/app
