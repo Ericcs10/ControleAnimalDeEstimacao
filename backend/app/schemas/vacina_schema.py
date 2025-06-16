@@ -15,5 +15,5 @@ class VacinaSchema(BaseModel):
     proxima_dose: datetime
 
 
-    class Config:
+    class model_config:
         json_encoders = {ObjectId: str}

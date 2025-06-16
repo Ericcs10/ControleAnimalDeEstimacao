@@ -3,6 +3,11 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from datetime import datetime, timedelta
 import random 
 from app.core.config import settings
+import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
+
 
 # Enums
 ESPECIES = ["Canino", "Felino", "Ave", "Roedor"]

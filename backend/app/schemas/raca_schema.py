@@ -9,5 +9,5 @@ class RacaSchema(BaseModel):
     temperamento: str
     especie: Especie
 
-    class Config:
+    class model_config:
         json_encoders = {ObjectId: str}

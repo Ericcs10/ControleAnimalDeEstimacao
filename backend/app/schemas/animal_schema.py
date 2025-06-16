@@ -14,5 +14,5 @@ class AnimalSchema(BaseModel):
     data_criacao: Optional[datetime] = None
     data_atualizacao: Optional[datetime] = None
 
-    class Config:
+    class model_config:
         json_encoders = {ObjectId: str}

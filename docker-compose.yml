@@ -1,6 +1,4 @@
-version: "3.9"
-
-services: 
+services:
   mongo:
     image: mongo:6.0
     ports:
@@ -9,18 +7,18 @@ services:
       - MONGO_INITDB_ROOT_USERNAME=root
       - MONGO_INITDB_ROOT_PASSWORD=example
     volumes:
-      - mongo_data:/data/db 
+      - mongo_data:/data/db
     networks:
       - pets-network
 
   mongo-express:
-    image: mongo-express 
+    image: mongo-express
     ports:
       - "8081:8081"
     environment:
       - ME_CONFIG_MONGODB_ADMINUSERNAME=root
       - ME_CONFIG_MONGODB_ADMINPASSWORD=example
-      - ME_CONFIG_MONGODB_SERVER=mongo
+      - ME_CONFIG_MONGODB_URL=mongodb://root:example@mongo:27017/
     depends_on:
       - mongo
     networks:
@@ -34,33 +32,36 @@ services:
       - "8000:8000"
     env_file:
       - .env
+    environment:
+      - MONGO_URL=mongodb://root:example@mongo:27017/petdb?authSource=admin
+      - MONGO_DB=petdb
     volumes:
-      - ./backend/app:/app/app
-      - ./backend/tests:/app/tests
+      - ./backend:/app
     depends_on:
       - mongo
     networks:
-      - pets-network
-    restart: unless-stopped
+      - pets-network 
 
   tests:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    command: pytest -v --disable-warnings
+    command: tail -f /dev/null
     env_file:
-      - .env.test
+      - .env
+    environment:
+      - MONGO_URL=mongodb://root:example@mongo:27017/testdb?authSource=admin
+      - MONGO_DB=petdb_test
+      - PYTHONPATH=/app
     volumes:
-      - ./backend/app:/app/app
-      - ./backend/tests:/app/tests
+      - ./backend:/app
     depends_on:
-      - mongo
+      - backend
     networks:
-      - pets-network
-    restart: "no"
+      - pets-network 
 
 volumes:
-  mongo_data: 
+  mongo_data:
 
 networks:
   pets-network:
