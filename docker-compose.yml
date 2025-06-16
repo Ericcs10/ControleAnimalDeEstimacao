@@ -6,8 +6,8 @@ services:
     ports:
       - "27017:27017"
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=root
-      - MONGO_INITDB_ROOT_PASSWORD=example
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
     volumes:
       - mongo_data:/data/db
     networks:
@@ -18,9 +18,9 @@ services:
     ports:
       - "8081:8081"
     environment:
-      - ME_CONFIG_MONGODB_ADMINUSERNAME=root
-      - ME_CONFIG_MONGODB_ADMINPASSWORD=example
-      - ME_CONFIG_MONGODB_URL=mongodb://root:example@mongo:27017/
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+      ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
     depends_on:
       - mongo
     networks:
@@ -33,10 +33,7 @@ services:
     ports:
       - "8000:8000"
     env_file:
-      - .env
-    environment:
-      - MONGODB_URL=mongodb://root:example@mongo:27017/petdb?authSource=admin
-      - MONGODB_NAME=petdb
+      - .env 
     volumes:
       - ./backend:/app
     depends_on:
@@ -49,48 +46,15 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     ports:
-      - "5173:80"
+      - "5173:80" 
+    env_file:
+      - .env 
     depends_on:
       - backend
     networks:
-      - pets-network
+      - pets-network 
 
-  tests:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    command: tail -f /dev/null
-    env_file:
-      - .env
-    environment:
-      - MONGODB_URL=mongodb://root:example@mongo:27017/testdb?authSource=admin
-      - MONGODB_NAME=petdb_test
-      - PYTHONPATH=/app
-    volumes:
-      - ./backend:/app
-    depends_on:
-      - backend
-    networks:
-      - pets-network
-
-  fakedata:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    command: python app/utils/fake_data.py
-    env_file:
-      - .env
-    environment:
-      - MONGODB_URL=mongodb://root:example@mongo:27017/petdb?authSource=admin
-      - PYTHONPATH=/app
-    volumes:
-      - ./backend:/app
-    depends_on:
-      - mongo
-    networks:
-      - pets-network
-
-volumes:
+volumes: 
   mongo_data:
 
 networks:

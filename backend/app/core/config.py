@@ -2,8 +2,8 @@ from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
-    mongodb_url: str
-    mongodb_name: str
+    MONGODB_URL: str
+    MONGODB_NAME: str
 
     class Config:
         env_file = ".env"
