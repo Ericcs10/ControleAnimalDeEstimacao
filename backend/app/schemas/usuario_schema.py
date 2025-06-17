@@ -1,7 +1,8 @@
 from pydantic import BaseModel, EmailStr, Field
 from typing import Optional
 from datetime import datetime
-from bson import ObjectId
+from app.schemas.objectid_schema import PyObjectId
+
 
 class UsuarioSchema(BaseModel):
     email: EmailStr
@@ -17,10 +18,13 @@ class UsuarioSchema(BaseModel):
                 "telefone": "61999999999",
                 "senha": "123456"
             }
-        }
+        },
+        "arbitrary_types_allowed": True,
+        "json_encoders": {PyObjectId: str}
     }
 
+
 class UsuarioDB(UsuarioSchema):
-    id: Optional[ObjectId] = Field(default=None, alias="_id")
+    id: Optional[PyObjectId] = Field(default=None, alias="_id")
     data_criacao: Optional[datetime] = None
     data_atualizacao: Optional[datetime] = None

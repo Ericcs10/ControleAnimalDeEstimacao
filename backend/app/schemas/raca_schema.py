@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from app.schemas.enums import Especie
-from bson import ObjectId
+from app.schemas.objectid_schema import PyObjectId
+
 
 class RacaSchema(BaseModel):
     tipo: str
@@ -9,5 +10,7 @@ class RacaSchema(BaseModel):
     temperamento: str
     especie: Especie
 
-    class model_config:
-        json_encoders = {ObjectId: str}
+    model_config = {
+        "arbitrary_types_allowed": True,
+        "json_encoders": {ObjectId: str}
+    }

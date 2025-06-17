@@ -1,7 +1,8 @@
 from pydantic import BaseModel
 from datetime import datetime
-from bson import ObjectId
+from app.schemas.objectid_schema import PyObjectId
 from app.schemas.enums import Intervalo
+
 
 class VacinaSchema(BaseModel):
     animal_id: ObjectId
@@ -14,6 +15,7 @@ class VacinaSchema(BaseModel):
     intervalo: Intervalo
     proxima_dose: datetime
 
-
-    class model_config:
-        json_encoders = {ObjectId: str}
+    model_config = {
+        "arbitrary_types_allowed": True,
+        "json_encoders": {ObjectId: str}
+    }
