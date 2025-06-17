@@ -1,28 +1,15 @@
-# Etapa de build
-FROM python:3.12-slim-bookworm AS builder
+FROM python:3.11-slim
 
-WORKDIR /app
+WORKDIR /code
 
-ENV PYTHONUNBUFFERED=1 \
-    PYTHONDONTWRITEBYTECODE=1 \
-    PIP_NO_CACHE_DIR=1
+RUN apt-get update && apt-get install -y gcc
 
-COPY requirements.txt .
+COPY ./requirements.txt /code/requirements.txt
 
-RUN pip install --user --no-warn-script-location -r requirements.txt
+RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
 
-# Etapa final
-FROM python:3.12-slim-bookworm
-
-WORKDIR /app
-
-COPY --from=builder /root/.local /root/.local
-COPY ./app ./app 
-
-ENV PATH=/root/.local/bin:$PATH \
-    PYTHONUNBUFFERED=1 \
-    PYTHONDONTWRITEBYTECODE=1
+COPY . /code
 
 EXPOSE 8000
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
