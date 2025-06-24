@@ -1,8 +1,7 @@
 from bson import ObjectId
 from pydantic import GetJsonSchemaHandler
 from pydantic.json_schema import JsonSchemaValue
-from typing import Any
-from pydantic import TypeAdapter
+from typing import Any 
 
 
 class PyObjectId(ObjectId):

@@ -5,6 +5,9 @@ from app.schemas.objectid_schema import PyObjectId
 
 
 class UsuarioSchema(BaseModel):
+    """
+    Schema de entrada e validação para dados de usuário.
+    """
     email: EmailStr
     cpf: str
     telefone: str
@@ -25,6 +28,9 @@ class UsuarioSchema(BaseModel):
 
 
 class UsuarioDB(UsuarioSchema):
+    """
+    Schema de saída para dados persistidos no banco.
+    """
     id: Optional[PyObjectId] = Field(default=None, alias="_id")
     data_criacao: Optional[datetime] = None
     data_atualizacao: Optional[datetime] = None

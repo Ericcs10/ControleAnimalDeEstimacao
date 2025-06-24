@@ -1,14 +1,17 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Optional
 from datetime import datetime
-from app.schemas.objectid_schema import PyObjectId
 from app.schemas.enums import Especie, Sexo
+from app.schemas.objectid_schema import PyObjectId 
 
 
 class AnimalSchema(BaseModel):
-    usuario_id: ObjectId
+    """
+    Schema para cadastro e leitura de animais.
+    """
+    usuario_id: PyObjectId = Field(...)
     especie: Especie
-    raca: ObjectId
+    raca: PyObjectId = Field(...)
     nome: str
     data_nascimento: datetime
     sexo: Sexo
@@ -17,5 +20,5 @@ class AnimalSchema(BaseModel):
 
     model_config = {
         "arbitrary_types_allowed": True,
-        "json_encoders": {ObjectId: str}
+        "json_encoders": {PyObjectId: str}
     }
