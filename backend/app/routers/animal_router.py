@@ -1,41 +1,45 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, status
 from typing import List
+
 from app.schemas.animal_schema import AnimalSchema
-from app.repositories import animal_repository
+from app.services.animal_service import AnimalService
 
 
 router = APIRouter(prefix="/animais", tags=["Animais"])
 
 
-@router.get("/", response_model=List[AnimalSchema])
+@router.post("/", status_code=status.HTTP_201_CREATED)
+async def criar_animal(animal: AnimalSchema):
+    animal_id = await AnimalService.criar(animal)
+    return {"id": animal_id}
+
+
+@router.get("/", response_model=List[dict])
 async def listar_animais():
-    return await animal_repository.listar_animais()
+    return await AnimalService.listar()
 
 
-@router.get("/{animal_id}", response_model=AnimalSchema)
+@router.get("/{animal_id}", response_model=dict)
 async def buscar_animal(animal_id: str):
-    animal = await animal_repository.buscar_animal_por_id(animal_id)
+    animal = await AnimalService.buscar_por_id(animal_id)
     if not animal:
         raise HTTPException(status_code=404, detail="Animal não encontrado")
     return animal
 
 
-@router.post("/", response_model=AnimalSchema, status_code=201)
-async def criar_animal(animal: AnimalSchema):
-    return await animal_repository.criar_animal(animal)
-
-
-@router.put("/{animal_id}", response_model=AnimalSchema)
-async def atualizar_animal(animal_id: str, animal: AnimalSchema):
-    animal_atualizado = await animal_repository.atualizar_animal(animal_id, animal)
-    if not animal_atualizado:
-        raise HTTPException(status_code=404, detail="Animal não encontrado")
-    return animal_atualizado
+@router.put("/{animal_id}")
+async def atualizar_animal(animal_id: str, dados: AnimalSchema):
+    atualizado = await AnimalService.atualizar(animal_id, dados)
+    if not atualizado:
+        raise HTTPException(
+            status_code=404, detail="Animal não encontrado ou nada foi alterado"
+        )
+    return {"msg": "Animal atualizado com sucesso"}
 
 
 @router.delete("/{animal_id}")
 async def deletar_animal(animal_id: str):
-    deletado = await animal_repository.deletar_animal(animal_id)
+    deletado = await AnimalService.deletar(animal_id)
     if not deletado:
         raise HTTPException(status_code=404, detail="Animal não encontrado")
-    return {"message": "Animal deletado com sucesso"}
+    return {"msg": "Animal removido com sucesso"}

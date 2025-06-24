@@ -1,34 +1,40 @@
 from typing import List, Optional
-from app.core.database import db
-from app.schemas.vacina_schema import VacinaSchema
 from bson import ObjectId
+from app.core.database import db
+from app.schemas.vacina_schema import VacinaSchema 
 
 
-collection = db.vacinas
+collection = db["vacinas"]
 
 
-async def listar_vacinas() -> List[VacinaSchema]:
-    return await collection.find().to_list(1000)
+async def create_vacina(vacina: VacinaSchema) -> str:
+    vacina_dict = vacina.model_dump()
+    result = await collection.insert_one(vacina_dict)
+    return str(result.inserted_id)
 
 
-async def buscar_vacina_por_id(vacina_id: str) -> Optional[VacinaSchema]:
-    return await collection.find_one({"_id": ObjectId(vacina_id)})
+async def get_vacinas() -> List[VacinaSchema]:
+    vacinas = await collection.find().to_list(100)
+    for v in vacinas:
+        v["id"] = str(v["_id"])
+        v.pop("_id", None)
+    return vacinas
 
 
-async def criar_vacina(vacina: VacinaSchema) -> VacinaSchema:
-    data = vacina.dict()
+async def get_vacina_by_id(vacina_id: str) -> Optional[VacinaSchema]:
+    vacina = await collection.find_one({"_id": ObjectId(vacina_id)})
+    if vacina:
+        vacina["id"] = str(vacina["_id"])
+        vacina.pop("_id", None)
+    return vacina
 
-    result = await collection.insert_one(data)
-    return await collection.find_one({"_id": result.inserted_id})
+async def update_vacina(vacina_id: str, data: dict) -> bool:
+    result = await collection.update_one(
+        {"_id": ObjectId(vacina_id)}, {"$set": data}
+    )
+    return result.modified_count > 0
 
 
-async def atualizar_vacina(vacina_id: str, vacina: VacinaSchema) -> Optional[VacinaSchema]:
-    data = vacina.dict()
-
-    await collection.update_one({"_id": ObjectId(vacina_id)}, {"$set": data})
-    return await collection.find_one({"_id": ObjectId(vacina_id)})
-
-
-async def deletar_vacina(vacina_id: str) -> bool:
+async def delete_vacina(vacina_id: str) -> bool:
     result = await collection.delete_one({"_id": ObjectId(vacina_id)})
-    return result.deleted_count == 1
+    return result.deleted_count > 0

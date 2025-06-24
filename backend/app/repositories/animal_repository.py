@@ -1,38 +1,36 @@
 from typing import List, Optional
+from bson import ObjectId
 from app.core.database import db
 from app.schemas.animal_schema import AnimalSchema
-from bson import ObjectId
-from datetime import datetime
+from app.schemas.objectid_schema import PyObjectId
 
 
-collection = db.animais
+class AnimalRepository:
 
+    @staticmethod
+    async def criar(animal: AnimalSchema) -> PyObjectId:
+        animal_dict = animal.model_dump()
+        result = await db["animais"].insert_one(animal_dict)
+        return result.inserted_id
 
-async def listar_animais() -> List[AnimalSchema]:
-    return await collection.find().to_list(1000)
+    @staticmethod
+    async def listar() -> List[dict]:
+        animais = await db["animais"].find().to_list(100)
+        return animais
 
+    @staticmethod
+    async def buscar_por_id(animal_id: str) -> Optional[dict]:
+        animal = await db["animais"].find_one({"_id": ObjectId(animal_id)})
+        return animal
 
-async def buscar_animal_por_id(animal_id: str) -> Optional[AnimalSchema]:
-    return await collection.find_one({"_id": ObjectId(animal_id)})
+    @staticmethod
+    async def atualizar(animal_id: str, dados: dict) -> bool:
+        result = await db["animais"].update_one(
+            {"_id": ObjectId(animal_id)}, {"$set": dados}
+        )
+        return result.modified_count > 0
 
-
-async def criar_animal(animal: AnimalSchema) -> AnimalSchema:
-    data = animal.dict()
-    data["data_criacao"] = datetime.utcnow()
-    data["data_atualizacao"] = datetime.utcnow()
-
-    result = await collection.insert_one(data)
-    return await collection.find_one({"_id": result.inserted_id})
-
-
-async def atualizar_animal(animal_id: str, animal: AnimalSchema) -> Optional[AnimalSchema]:
-    data = animal.dict()
-    data["data_atualizacao"] = datetime.utcnow()
-
-    await collection.update_one({"_id": ObjectId(animal_id)}, {"$set": data})
-    return await collection.find_one({"_id": ObjectId(animal_id)})
-
-
-async def deletar_animal(animal_id: str) -> bool:
-    result = await collection.delete_one({"_id": ObjectId(animal_id)})
-    return result.deleted_count == 1
+    @staticmethod
+    async def deletar(animal_id: str) -> bool:
+        result = await db["animais"].delete_one({"_id": ObjectId(animal_id)})
+        return result.deleted_count > 0
