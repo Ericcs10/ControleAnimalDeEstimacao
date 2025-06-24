@@ -1,11 +1,9 @@
 from fastapi import FastAPI
-from app.routers import usuario_router
+from app.routers import usuario_router 
 
+app = FastAPI(title="Controle de Pets") 
 
-app = FastAPI(title="Controle de Pets")
-
-app.include_router(usuario_router.router)
-
+app.include_router(usuario_router.router, prefix="/usuarios", tags=["Usuarios"])
 
 @app.get("/")
 async def hello_world():
