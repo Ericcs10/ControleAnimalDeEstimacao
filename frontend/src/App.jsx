@@ -1,24 +1,66 @@
-import { useState } from 'react';
-import UserForm from './components/UserForm';
-import UserTable from './components/UserTable';
+import { useEffect, useState } from "react";
+import {
+  listarUsuarios,
+  criarUsuario,
+  atualizarUsuario,
+  deletarUsuario,
+} from "./services/usuarioService";
+import UsuarioForm from "./components/UsuarioForm";
+import UsuarioTable from "./components/UsuarioTable";
 
 function App() {
-  const [refresh, setRefresh] = useState(0);
+  const [usuarios, setUsuarios] = useState([]);
+  const [usuarioEditando, setUsuarioEditando] = useState(null);
 
-  const refreshUsers = () => setRefresh((prev) => prev + 1);
+  const carregarUsuarios = async () => {
+    const dados = await listarUsuarios();
+    setUsuarios(dados);
+  };
+
+  useEffect(() => {
+    carregarUsuarios();
+  }, []);
+
+  const handleSalvar = async (usuario) => {
+    try {
+      if (usuarioEditando) {
+        await atualizarUsuario(usuarioEditando._id, usuario);
+        setUsuarioEditando(null);
+      } else {
+        await criarUsuario(usuario);
+      }
+      carregarUsuarios();
+    } catch (error) {
+      alert("Erro ao salvar usuário");
+    }
+  };
+
+  const handleDeletar = async (id) => {
+    try {
+      await deletarUsuario(id);
+      carregarUsuarios();
+    } catch (error) {
+      alert("Erro ao deletar usuário");
+    }
+  };
+
+  const handleEditar = (usuario) => {
+    setUsuarioEditando(usuario);
+  };
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <header className="bg-purple-700 text-white w-full py-5 text-center text-2xl font-bold shadow-md">
+    <div className="p-4 bg-gray-100 min-h-screen">
+      <h1 className="text-2xl font-bold text-center mb-4 text-purple-800">
         Controle de Animais
-      </header>
-
-      <main className="flex flex-col items-center justify-center px-5 py-10">
-        <div className="flex flex-col md:flex-row gap-10 w-full max-w-6xl">
-          <UserForm fetchUsers={refreshUsers} />
-          <UserTable fetchTrigger={refresh} />
-        </div>
-      </main>
+      </h1>
+      <div className="flex gap-4 justify-center">
+        <UsuarioForm aoSalvar={handleSalvar} usuarioAtual={usuarioEditando} />
+        <UsuarioTable
+          usuarios={usuarios}
+          aoEditar={handleEditar}
+          aoDeletar={handleDeletar}
+        />
+      </div>
     </div>
   );
 }
