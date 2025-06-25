@@ -38,3 +38,7 @@ async def update_vacina(vacina_id: str, data: dict) -> bool:
 async def delete_vacina(vacina_id: str) -> bool:
     result = await collection.delete_one({"_id": ObjectId(vacina_id)})
     return result.deleted_count > 0
+
+@staticmethod
+async def listar_por_animal(animal_id: str) -> List[dict]:
+    return await db["vacinas"].find({"animal_id": ObjectId(animal_id)}).to_list(100)

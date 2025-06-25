@@ -15,7 +15,7 @@ class AnimalSchema(BaseModel):
     nome: str
     data_nascimento: datetime
     sexo: Sexo
-    foto_url: Optional[str] = None  # <-- Adicionado o campo opcional
+    foto_url: Optional[str] = None 
     data_criacao: Optional[datetime] = None
     data_atualizacao: Optional[datetime] = None
 
