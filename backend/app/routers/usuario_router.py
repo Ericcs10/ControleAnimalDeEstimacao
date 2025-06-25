@@ -6,10 +6,7 @@ from app.core.database import db
 from app.schemas.usuario_schema import UsuarioSchema, UsuarioDB
 
 
-router = APIRouter(
-    prefix="/usuarios",
-    tags=["Usuários"]
-)
+router = APIRouter()
 
 
 @router.post("/", response_model=dict, status_code=status.HTTP_201_CREATED)
