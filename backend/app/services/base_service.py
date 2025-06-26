@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Generic, TypeVar, List
 
-T = TypeVar("T")  # Tipo do schema
+T = TypeVar("T") 
 
 class BaseService(ABC, Generic[T]):
 
