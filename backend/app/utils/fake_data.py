@@ -1,6 +1,6 @@
 import asyncio
 from motor.motor_asyncio import AsyncIOMotorClient
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import random 
 from app.core.config import settings
 import sys
@@ -8,15 +8,14 @@ import os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 
-
-# Enums
-ESPECIES = ["Canino", "Felino", "Ave", "Roedor"]
+# Constantes
+ESPECIES = ["Canino", "Felino", "Ave", "Roedor"] 
 SEXOS = ["Masculino", "Feminino", "Outro"]
 INTERVALOS = ["Dias", "Meses", "Anos"]
 
-# MongoDB client usando configuração
-client = AsyncIOMotorClient(settings.mongodb_url, uuidRepresentation="standard")
-db = client[settings.mongodb_name]
+# Conexão Mongo
+client = AsyncIOMotorClient(settings.MONGODB_URL, uuidRepresentation="standard")
+db = client[settings.MONGODB_NAME]
 
 async def popular_dados(limpar_db=True):
     if limpar_db:
@@ -28,8 +27,8 @@ async def popular_dados(limpar_db=True):
 
     print("🚀 Inserindo dados...")
 
-    # Criar raças
-    racas = []
+    # Racas
+    racas = [] 
     for i in range(3):
         raca = {
             "tipo": f"Raça {i}",
@@ -41,22 +40,22 @@ async def popular_dados(limpar_db=True):
         raca_id = await db.racas.insert_one(raca)
         racas.append(raca_id.inserted_id)
 
-    # Criar usuários
-    usuarios = []
+    # Usuarios
+    usuarios = [] 
     for i in range(2):
         usuario = {
             "email": f"user{i}@email.com",
             "cpf": f"0000000000{i}",
             "telefone": f"6199999999{i}",
             "senha_hash": "123456_hashed",
-            "data_criacao": datetime.utcnow(),
-            "data_atualizacao": datetime.utcnow()
+            "data_criacao": datetime.now(timezone.utc),
+            "data_atualizacao": datetime.now(timezone.utc)
         }
         usuario_id = await db.usuarios.insert_one(usuario)
         usuarios.append(usuario_id.inserted_id)
 
-    # Criar animais
-    animais = []
+    # Animais
+    animais = [] 
     for i in range(3):
         animal = {
             "usuario_id": random.choice(usuarios),
@@ -65,15 +64,15 @@ async def popular_dados(limpar_db=True):
             "nome": f"Pet_{i}",
             "data_nascimento": datetime(2021, random.randint(1, 12), random.randint(1, 28)),
             "sexo": random.choice(SEXOS),
-            "data_criacao": datetime.utcnow(),
-            "data_atualizacao": datetime.utcnow()
+            "data_criacao": datetime.now(timezone.utc),
+            "data_atualizacao": datetime.now(timezone.utc)
         }
         animal_id = await db.animais_estimacao.insert_one(animal)
         animais.append(animal_id.inserted_id)
 
-    # Criar vacinas
-    for i in range(5):
-        data_vacina = datetime.utcnow() - timedelta(days=random.randint(30, 365))
+    # Vacinas
+    for i in range(5): 
+        data_vacina = datetime.now(timezone.utc) - timedelta(days=random.randint(30, 365))
         vacina = {
             "animal_id": random.choice(animais),
             "nome": f"Vacina {i}",
