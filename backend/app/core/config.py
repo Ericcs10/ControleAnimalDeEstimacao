@@ -6,6 +6,7 @@ class Settings(BaseSettings):
     MONGO_USER: str = "root"
     MONGO_PASS: str = "example"
     MONGO_DB: str = "petdb"
+    DEBUG_TOKEN: str = "debug123"
 
     @property
     def MONGODB_URL(self):
