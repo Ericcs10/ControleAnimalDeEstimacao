@@ -3,9 +3,9 @@ from bson import ObjectId
 from app.core.database import db
 from app.schemas.animal_schema import AnimalSchema
 from app.schemas.objectid_schema import PyObjectId
+from app.repositories.base_repository import BaseRepository
 
-
-class AnimalRepository:
+class AnimalRepository(BaseRepository[AnimalSchema]):
 
     @staticmethod
     async def criar(animal: AnimalSchema) -> PyObjectId:
@@ -15,13 +15,11 @@ class AnimalRepository:
 
     @staticmethod
     async def listar() -> List[dict]:
-        animais = await db["animais"].find().to_list(100)
-        return animais
+        return await db["animais"].find().to_list(100)
 
     @staticmethod
     async def buscar_por_id(animal_id: str) -> Optional[dict]:
-        animal = await db["animais"].find_one({"_id": ObjectId(animal_id)})
-        return animal
+        return await db["animais"].find_one({"_id": ObjectId(animal_id)})
 
     @staticmethod
     async def atualizar(animal_id: str, dados: dict) -> bool:

@@ -2,9 +2,9 @@ from typing import List, Optional
 from bson import ObjectId
 from app.core.database import db
 from app.schemas.vacina_schema import VacinaSchema
+from app.repositories.base_repository import BaseRepository
 
-
-class VacinaRepository:
+class VacinaRepository(BaseRepository[VacinaSchema]):
     collection = db["vacinas"]
 
     @staticmethod
@@ -47,4 +47,4 @@ class VacinaRepository:
         for v in vacinas:
             v["id"] = str(v["_id"])
             v.pop("_id", None)
-        return vacinas
+        return vacinas 

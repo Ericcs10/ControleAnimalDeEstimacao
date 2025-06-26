@@ -35,4 +35,4 @@ async def atualizar_usuario(usuario_id: str, usuario: UsuarioSchema) -> Optional
 
 async def deletar_usuario(usuario_id: str) -> bool:
     result = await collection.delete_one({"_id": ObjectId(usuario_id)})
-    return result.deleted_count == 1
+    return result.deleted_count == 1 

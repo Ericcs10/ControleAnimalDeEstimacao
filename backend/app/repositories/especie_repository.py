@@ -21,4 +21,4 @@ def update_especie(especie_id: str, nome: str) -> bool:
 
 def delete_especie(especie_id: str) -> bool:
     result = collection.delete_one({"_id": ObjectId(especie_id)})
-    return result.deleted_count > 0
+    return result.deleted_count > 0 
