@@ -6,7 +6,7 @@ from io import BytesIO
 from app.schemas.animal_schema import AnimalSchema
 from app.services.animal_service import AnimalService
 from app.repositories.vacina_repository import VacinaRepository
-from app.utils.pdf_generator import gerar_pdf_animal  # Novo utilitário
+from app.utils.pdf_generator import gerar_pdf_animal
 
 router = APIRouter(prefix="/animais", tags=["Animais"])
 
