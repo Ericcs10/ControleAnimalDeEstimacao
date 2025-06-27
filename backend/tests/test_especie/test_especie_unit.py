@@ -1,6 +1,6 @@
 from unittest.mock import AsyncMock, patch
 import pytest
-from app.schemas.str import str
+from app.schemas.especie_schema import EspecieSchema
 from app.services import especie_service
 
 @pytest.mark.asyncio
