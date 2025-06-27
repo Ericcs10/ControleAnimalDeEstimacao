@@ -3,7 +3,7 @@ from bson import ObjectId
 from datetime import datetime, timezone
 from app.core.database import db
 from app.schemas.vacina_schema import VacinaCreate, VacinaRead
-from app.repositories.base_repository import BaseRepository 
+from app.repositories.base_repository import BaseRepository
 
 class VacinaRepository(BaseRepository[VacinaCreate]):
     collection = db["vacinas"]
@@ -19,9 +19,14 @@ class VacinaRepository(BaseRepository[VacinaCreate]):
 
     @staticmethod
     async def listar() -> List[VacinaRead]:
-        vacinas = await VacinaRepository.collection.find().to_list(100)
-        for v in vacinas:
+        vacinas_raw = await VacinaRepository.collection.find().to_list(100)
+        vacinas = []
+        for v in vacinas_raw:
             v["id"] = str(v.pop("_id"))
+            v["animal_id"] = str(v["animal_id"])
+            v["data_criacao"] = v.get("data_criacao")
+            v["data_atualizacao"] = v.get("data_atualizacao")
+            vacinas.append(VacinaRead(**v))
         return vacinas
 
     @staticmethod
@@ -29,7 +34,9 @@ class VacinaRepository(BaseRepository[VacinaCreate]):
         vacina = await VacinaRepository.collection.find_one({"_id": ObjectId(vacina_id)})
         if vacina:
             vacina["id"] = str(vacina.pop("_id"))
-        return vacina
+            vacina["animal_id"] = str(vacina["animal_id"])
+            return VacinaRead(**vacina)
+        return None
 
     @staticmethod
     async def atualizar(vacina_id: str, data: dict) -> bool:
@@ -46,7 +53,11 @@ class VacinaRepository(BaseRepository[VacinaCreate]):
 
     @staticmethod
     async def listar_por_animal(animal_id: str) -> List[VacinaRead]:
-        vacinas = await VacinaRepository.collection.find({"animal_id": ObjectId(animal_id)}).to_list(100)
-        for v in vacinas:
+        vacinas_raw = await VacinaRepository.collection.find({"animal_id": ObjectId(animal_id)}).to_list(100)
+        vacinas = []
+        for v in vacinas_raw:
             v["id"] = str(v.pop("_id"))
+            v["animal_id"] = str(v["animal_id"])
+            vacinas.append(VacinaRead(**v))
         return vacinas
+    
