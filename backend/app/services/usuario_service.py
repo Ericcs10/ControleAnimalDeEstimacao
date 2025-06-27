@@ -4,8 +4,7 @@ from app.repositories.usuario_repository import UsuarioRepository
 from app.schemas.usuario_schema import UsuarioSchema
 
 
-class UsuarioService(BaseService[UsuarioSchema]):
-
+class UsuarioService(BaseService[UsuarioSchema]): 
     def __init__(self):
         self.repository = UsuarioRepository()
 
