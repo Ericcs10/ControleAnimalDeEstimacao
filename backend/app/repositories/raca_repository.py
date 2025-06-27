@@ -1,14 +1,14 @@
 from typing import List, Optional
 from bson import ObjectId
 from app.core.database import db
-from app.schemas.raca_schema import RacaSchema
+from app.schemas.raca_schema import RacaCreate, RacaUpdate, RacaSchema
 from app.repositories.base_repository import BaseRepository
 
-class RacaRepository(BaseRepository[RacaSchema]):
+class RacaRepository(BaseRepository[RacaCreate]):
     collection = db["racas"]
 
     @staticmethod
-    async def criar(raca: RacaSchema) -> str:
+    async def criar(raca: RacaCreate) -> str:
         raca_dict = raca.model_dump()
         result = await RacaRepository.collection.insert_one(raca_dict)
         return str(result.inserted_id)
@@ -30,9 +30,10 @@ class RacaRepository(BaseRepository[RacaSchema]):
         return raca
 
     @staticmethod
-    async def atualizar(raca_id: str, data: dict) -> bool:
+    async def atualizar(raca_id: str, data: RacaUpdate) -> bool:
         result = await RacaRepository.collection.update_one(
-            {"_id": ObjectId(raca_id)}, {"$set": data}
+            {"_id": ObjectId(raca_id)},
+            {"$set": data.model_dump()}
         )
         return result.modified_count > 0
 

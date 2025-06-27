@@ -20,7 +20,7 @@ class BaseRepository(ABC, Generic[T]):
     @abstractmethod
     async def atualizar(self, obj_id: str, dados: dict) -> bool:
         pass
- 
+
     @abstractmethod
     async def deletar(self, obj_id: str) -> bool:
         pass

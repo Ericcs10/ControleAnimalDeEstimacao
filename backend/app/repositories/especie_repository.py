@@ -1,24 +1,38 @@
-from app.core.database import db
+from typing import Optional, List
 from bson import ObjectId
+from app.core.database import db 
 from app.models.especie_model import Especie
 
-collection = db["especies"]
+class EspecieRepository:
+    collection = db["especies"]
 
-def create_especie(especie: Especie) -> ObjectId:
-    result = collection.insert_one(especie.to_dict())
-    return result.inserted_id
+    @staticmethod
+    def criar(nome: str) -> str:
+        especie = Especie(nome=nome)
+        result = EspecieRepository.collection.insert_one(especie.to_dict())
+        return str(result.inserted_id)
 
-def get_all_especies():
-    return [Especie.from_dict(e) for e in collection.find()]
+    @staticmethod
+    def listar() -> List[dict]:
+        especies = EspecieRepository.collection.find()
+        return [{"id": str(e["_id"]), "nome": e["nome"]} for e in especies]
 
-def get_especie_by_id(especie_id: str):
-    doc = collection.find_one({"_id": ObjectId(especie_id)})
-    return Especie.from_dict(doc) if doc else None
+    @staticmethod
+    def buscar_por_id(especie_id: str) -> Optional[dict]:
+        doc = EspecieRepository.collection.find_one({"_id": ObjectId(especie_id)})
+        if doc:
+            return {"id": str(doc["_id"]), "nome": doc["nome"]}
+        return None
 
-def update_especie(especie_id: str, nome: str) -> bool:
-    result = collection.update_one({"_id": ObjectId(especie_id)}, {"$set": {"nome": nome}})
-    return result.modified_count > 0
+    @staticmethod
+    def atualizar(especie_id: str, nome: str) -> bool:
+        result = EspecieRepository.collection.update_one(
+            {"_id": ObjectId(especie_id)},
+            {"$set": {"nome": nome}}
+        )
+        return result.modified_count > 0
 
-def delete_especie(especie_id: str) -> bool:
-    result = collection.delete_one({"_id": ObjectId(especie_id)})
-    return result.deleted_count > 0 
+    @staticmethod
+    def deletar(especie_id: str) -> bool:
+        result = EspecieRepository.collection.delete_one({"_id": ObjectId(especie_id)})
+        return result.deleted_count > 0

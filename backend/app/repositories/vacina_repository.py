@@ -1,20 +1,25 @@
 from typing import List, Optional
 from bson import ObjectId
 from app.core.database import db
-from app.schemas.vacina_schema import VacinaSchema
+from app.schemas.vacina_schema import VacinaCreate, VacinaSchema
 from app.repositories.base_repository import BaseRepository
+from datetime import datetime, timezone
 
-class VacinaRepository(BaseRepository[VacinaSchema]):
+
+class VacinaRepository(BaseRepository[VacinaCreate]):
     collection = db["vacinas"]
 
     @staticmethod
-    async def criar(vacina: VacinaSchema) -> str:
-        vacina_dict = vacina.model_dump()
-        result = await VacinaRepository.collection.insert_one(vacina_dict)
+    async def criar(vacina: VacinaCreate) -> str:
+        dados = vacina.model_dump()
+        now = datetime.now(timezone.utc)
+        dados["data_criacao"] = now
+        dados["data_atualizacao"] = now
+        result = await VacinaRepository.collection.insert_one(dados)
         return str(result.inserted_id)
 
     @staticmethod
-    async def listar() -> List[dict]:
+    async def listar() -> List[VacinaSchema]:
         vacinas = await VacinaRepository.collection.find().to_list(100)
         for v in vacinas:
             v["id"] = str(v["_id"])
@@ -22,7 +27,7 @@ class VacinaRepository(BaseRepository[VacinaSchema]):
         return vacinas
 
     @staticmethod
-    async def buscar_por_id(vacina_id: str) -> Optional[dict]:
+    async def buscar_por_id(vacina_id: str) -> Optional[VacinaSchema]:
         vacina = await VacinaRepository.collection.find_one({"_id": ObjectId(vacina_id)})
         if vacina:
             vacina["id"] = str(vacina["_id"])
@@ -31,6 +36,7 @@ class VacinaRepository(BaseRepository[VacinaSchema]):
 
     @staticmethod
     async def atualizar(vacina_id: str, data: dict) -> bool:
+        data["data_atualizacao"] = datetime.now(timezone.utc)
         result = await VacinaRepository.collection.update_one(
             {"_id": ObjectId(vacina_id)}, {"$set": data}
         )
@@ -42,9 +48,9 @@ class VacinaRepository(BaseRepository[VacinaSchema]):
         return result.deleted_count > 0
 
     @staticmethod
-    async def listar_por_animal(animal_id: str) -> List[dict]:
+    async def listar_por_animal(animal_id: str) -> List[VacinaSchema]:
         vacinas = await VacinaRepository.collection.find({"animal_id": ObjectId(animal_id)}).to_list(100)
         for v in vacinas:
             v["id"] = str(v["_id"])
             v.pop("_id", None)
-        return vacinas 
+        return vacinas
