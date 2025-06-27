@@ -1,7 +1,7 @@
 from unittest.mock import AsyncMock, patch
 import pytest
 from app.schemas.usuario_schema import UsuarioSchema
-from app.services import usuario_service
+from app.services.usuario_service import UsuarioService
 
 @pytest.mark.asyncio
 @patch("app.services.usuario_service.usuario_repository")
@@ -15,5 +15,5 @@ async def test_criar_usuario_unit(mock_repo):
         senha="123456"
     )
 
-    result = await usuario_service.criar_usuario(usuario)
+    result = await UsuarioService().criar(usuario)
     assert result is not None
