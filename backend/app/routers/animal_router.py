@@ -3,7 +3,7 @@ from fastapi.responses import StreamingResponse
 from typing import List
 from io import BytesIO
 
-from app.schemas.animal_schema import AnimalCreate, AnimalUpdate, AnimalDB
+from app.schemas.animal_schema import AnimalCreate, AnimalUpdate, AnimalRead
 from app.services.animal_service import AnimalService
 from app.repositories.vacina_repository import VacinaRepository
 from app.utils.pdf_generator import gerar_pdf_animal
@@ -18,12 +18,12 @@ async def criar_animal(animal: AnimalCreate):
     return {"id": animal_id}
 
 
-@router.get("/", response_model=List[AnimalDB])
+@router.get("/", response_model=List[AnimalRead])
 async def listar_animais():
     return await service.listar()
 
 
-@router.get("/{animal_id}", response_model=AnimalDB)
+@router.get("/{animal_id}", response_model=AnimalRead)
 async def buscar_animal(animal_id: str):
     animal = await service.buscar_por_id(animal_id)
     if not animal:

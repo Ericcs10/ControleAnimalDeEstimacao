@@ -14,7 +14,7 @@ class UsuarioUpdate(UsuarioBase):
     senha: Optional[str] = Field(None, example="senha123")
 
 class UsuarioDB(UsuarioBase): 
-    id: Optional[str] = Field(default=None)  # Alterado de PyObjectId para str
+    id: Optional[str] = Field(default=None) 
     senha: str
     data_criacao: Optional[datetime] = None
     data_atualizacao: Optional[datetime] = None
