@@ -8,6 +8,6 @@ from app.services import especie_service
 async def test_criar_especie_unit(mock_repo):
     mock_repo.criar = AsyncMock(return_value="123")
 
-    objeto = str(nome="Especie")
+    objeto = "Especie de Teste"
     result = await especie_service.criar(objeto)
     assert result is not None

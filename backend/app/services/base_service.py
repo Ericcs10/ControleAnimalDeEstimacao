@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
-from typing import Generic, TypeVar, List
+from typing import Generic, TypeVar, List, Optional
 
-T = TypeVar("T") 
+T = TypeVar("T")
 
 class BaseService(ABC, Generic[T]):
 
@@ -10,11 +10,11 @@ class BaseService(ABC, Generic[T]):
         pass
 
     @abstractmethod
-    async def listar(self) -> List[T]:
+    async def listar(self) -> List[dict]:
         pass
 
     @abstractmethod
-    async def buscar_por_id(self, id_: str) -> T:
+    async def buscar_por_id(self, id_: str) -> Optional[dict]:
         pass
 
     @abstractmethod
