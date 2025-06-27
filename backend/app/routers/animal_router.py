@@ -1,19 +1,19 @@
-from fastapi import APIRouter, HTTPException, status 
+from fastapi import APIRouter, HTTPException, status
 from fastapi.responses import StreamingResponse
 from typing import List
 from io import BytesIO
 
-from app.schemas.animal_schema import AnimalSchema, AnimalDB
+from app.schemas.animal_schema import AnimalCreate, AnimalUpdate, AnimalDB
 from app.services.animal_service import AnimalService
 from app.repositories.vacina_repository import VacinaRepository
 from app.utils.pdf_generator import gerar_pdf_animal
 
-router = APIRouter(prefix="/animais", tags=["Animais"])
-
+router = APIRouter(prefix="/animais", tags=["Animais"]) 
 service = AnimalService()
 
-@router.post("/", response_model=dict, status_code=status.HTTP_201_CREATED)
-async def criar_animal(animal: AnimalSchema):
+
+@router.post("/", status_code=status.HTTP_201_CREATED, response_model=dict)
+async def criar_animal(animal: AnimalCreate):
     animal_id = await service.criar(animal)
     return {"id": animal_id}
 
@@ -32,12 +32,10 @@ async def buscar_animal(animal_id: str):
 
 
 @router.put("/{animal_id}", response_model=dict)
-async def atualizar_animal(animal_id: str, dados: AnimalSchema):
+async def atualizar_animal(animal_id: str, dados: AnimalUpdate):
     sucesso = await service.atualizar(animal_id, dados)
     if not sucesso:
-        raise HTTPException(
-            status_code=404, detail="Animal não encontrado ou nada foi alterado"
-        )
+        raise HTTPException(status_code=404, detail="Animal não encontrado ou nada foi alterado")
     return {"message": "Animal atualizado com sucesso"}
 
 

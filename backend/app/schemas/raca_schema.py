@@ -5,19 +5,28 @@ from typing import Optional
 from datetime import datetime
 
 
-class RacaSchema(BaseModel):
-    """
-    Schema para cadastro de raças.
-    """
-    tipo: str
-    pelagem: str
-    tamanho_pelagem: str
-    temperamento: str
+class RacaBase(BaseModel):
+    tipo: str = Field(..., example="Labrador")
+    pelagem: str = Field(..., example="Curta")
+    tamanho_pelagem: str = Field(..., example="Média")
+    temperamento: str = Field(..., example="Amigável")
     especie: Especie
-    data_criacao: Optional[datetime] = None
-    data_atualizacao: Optional[datetime] = None
-
+    
     model_config = {
         "arbitrary_types_allowed": True,
         "json_encoders": {PyObjectId: str}
     }
+
+
+class RacaCreate(RacaBase):
+    pass
+
+
+class RacaUpdate(RacaBase):
+    pass
+
+
+class RacaSchema(RacaBase):
+    id: Optional[PyObjectId] = Field(default=None, alias="_id")
+    data_criacao: Optional[datetime] = None
+    data_atualizacao: Optional[datetime] = None

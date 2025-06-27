@@ -1,7 +1,7 @@
 from bson import ObjectId
 from pydantic import GetJsonSchemaHandler
 from pydantic.json_schema import JsonSchemaValue
-from typing import Any 
+from typing import Any
 
 
 class PyObjectId(ObjectId):
@@ -19,4 +19,4 @@ class PyObjectId(ObjectId):
     def __get_pydantic_json_schema__(
         cls, core_schema: Any, handler: GetJsonSchemaHandler
     ) -> JsonSchemaValue:
-        return {"type": "string"}
+        return {"type": "string", "example": "665a4b7c25ee4c001c7db4c1"}

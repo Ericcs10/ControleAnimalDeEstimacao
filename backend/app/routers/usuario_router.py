@@ -1,13 +1,14 @@
 from fastapi import APIRouter, HTTPException, status
-from typing import List 
-from app.schemas.usuario_schema import UsuarioSchema, UsuarioDB
+from typing import List
+from app.schemas.usuario_schema import UsuarioCreate, UsuarioUpdate, UsuarioDB
 from app.services.usuario_service import UsuarioService
 
 router = APIRouter(prefix="/usuarios", tags=["Usuarios"])
 service = UsuarioService()
 
-@router.post("/", status_code=status.HTTP_201_CREATED, response_model=dict)
-async def criar_usuario(usuario: UsuarioSchema):
+
+@router.post("/", response_model=dict, status_code=status.HTTP_201_CREATED)
+async def criar_usuario(usuario: UsuarioCreate):
     usuario_id = await service.criar(usuario)
     return {"id": usuario_id}
 
@@ -21,12 +22,12 @@ async def listar_usuarios():
 async def buscar_usuario(usuario_id: str):
     usuario = await service.buscar_por_id(usuario_id)
     if not usuario:
-        raise HTTPException(status_code=404, detail="Usuário não encontrado") 
+        raise HTTPException(status_code=404, detail="Usuário não encontrado")
     return usuario
 
 
 @router.put("/{usuario_id}", response_model=dict)
-async def atualizar_usuario(usuario_id: str, dados: UsuarioSchema):
+async def atualizar_usuario(usuario_id: str, dados: UsuarioUpdate):
     sucesso = await service.atualizar(usuario_id, dados)
     if not sucesso:
         raise HTTPException(status_code=404, detail="Usuário não encontrado")
