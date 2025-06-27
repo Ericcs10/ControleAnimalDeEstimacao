@@ -9,7 +9,7 @@ class RacaBase(BaseModel):
     pelagem: str = Field(..., example="Curta")
     tamanho_pelagem: str = Field(..., example="Média")
     temperamento: str = Field(..., example="Amigável")
-    especie: Especie
+    especie: Especie = Field(..., example="Canino")
 
     model_config = {
         "arbitrary_types_allowed": True,
@@ -32,6 +32,7 @@ class RacaUpdate(BaseModel):
     }
 
 class RacaRead(RacaBase):
-    id: Optional[PyObjectId] = Field(default=None, alias="_id")
+    id: str = Field(..., example="665a4b7c25ee4c001c7db4c1")
     data_criacao: Optional[datetime] = None
     data_atualizacao: Optional[datetime] = None
+    
