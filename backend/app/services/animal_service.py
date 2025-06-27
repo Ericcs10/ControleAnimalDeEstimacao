@@ -1,8 +1,10 @@
 from typing import List, Optional
-from app.services.base_service import BaseService
-from app.schemas.animal_schema import AnimalCreate
-from app.repositories.animal_repository import AnimalRepository
 from fastapi import HTTPException
+
+from app.services.base_service import BaseService
+from app.schemas.animal_schema import AnimalCreate, AnimalUpdate
+from app.repositories.animal_repository import AnimalRepository
+
 
 class AnimalService(BaseService[AnimalCreate]):
     def __init__(self):
@@ -20,8 +22,8 @@ class AnimalService(BaseService[AnimalCreate]):
             raise HTTPException(status_code=404, detail="Animal não encontrado")
         return animal
 
-    async def atualizar(self, animal_id: str, dados: AnimalCreate) -> bool:
-        atualizado = await self.repository.atualizar(animal_id, dados.model_dump())
+    async def atualizar(self, animal_id: str, dados: AnimalUpdate) -> bool:
+        atualizado = await self.repository.atualizar(animal_id, dados.model_dump(exclude_unset=True))
         if not atualizado:
             raise HTTPException(status_code=404, detail="Animal não encontrado ou nada foi alterado")
         return True

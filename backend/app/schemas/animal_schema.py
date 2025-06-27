@@ -20,6 +20,21 @@ class AnimalCreate(BaseModel):
     }
 
 
+class AnimalUpdate(BaseModel):
+    usuario_id: Optional[PyObjectId] = None
+    especie: Optional[Especie] = None
+    raca: Optional[PyObjectId] = None
+    nome: Optional[str] = None
+    data_nascimento: Optional[datetime] = None
+    sexo: Optional[Sexo] = None
+    foto_url: Optional[str] = None
+
+    model_config = {
+        "arbitrary_types_allowed": True,
+        "json_encoders": {PyObjectId: str}
+    }
+
+
 class AnimalRead(AnimalCreate):
     id: str
     data_criacao: Optional[datetime] = None

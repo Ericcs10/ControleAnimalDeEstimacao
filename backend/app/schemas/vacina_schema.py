@@ -20,20 +20,14 @@ class VacinaBase(BaseModel):
         "json_encoders": {PyObjectId: str}
     }
 
-
-class VacinaCreate(VacinaBase):
+class VacinaCreate(VacinaBase): 
     pass
 
-
-class VacinaUpdate(VacinaBase):
+class VacinaUpdate(VacinaBase): 
     pass
 
-
-class VacinaSchema(VacinaCreate):
-    pass
-
-
-class VacinaDB(VacinaBase):
-    id: Optional[PyObjectId] = Field(default=None, alias="_id")
+class VacinaRead(VacinaBase):
+    id: str = Field(..., example="665a4b7c25ee4c001c7db4c1")
     data_criacao: Optional[datetime] = None
     data_atualizacao: Optional[datetime] = None
+    
