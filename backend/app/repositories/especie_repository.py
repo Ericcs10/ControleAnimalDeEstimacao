@@ -9,7 +9,9 @@ class EspecieRepository:
     @staticmethod
     def criar(nome: str) -> str:
         especie = Especie(nome=nome)
+        print(">>> Inserindo no MongoDB:", especie.to_dict())  # DEBUG
         result = EspecieRepository.collection.insert_one(especie.to_dict())
+        print(">>> Resultado do insert:", result.inserted_id)  # DEBUG
         return str(result.inserted_id)
 
     @staticmethod

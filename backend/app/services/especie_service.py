@@ -8,25 +8,22 @@ from app.schemas.especie_schema import EspecieSchema
 
 class EspecieService(BaseService[EspecieSchema]):
 
-    async def criar(self, dados: EspecieSchema) -> str:
-        especie = Especie(nome=dados.nome)
-        especie_id = especie_repository.create_especie(especie)
-        return str(especie_id)
+    async def criar(self, dados: EspecieSchema) -> dict:
+        especie_id = especie_repository.criar(dados.nome)
+
+        if not especie_id:
+            raise HTTPException(status_code=500, detail="Erro ao criar espécie")
+
+        return {"id": especie_id, "nome": dados.nome}
 
     async def listar(self) -> List[dict]:
-        especies = especie_repository.get_all_especies()
-        return [{"id": str(e._id), "nome": e.nome} for e in especies]
+        return especie_repository.listar()
 
     async def buscar_por_id(self, especie_id: str) -> Optional[dict]:
-        especie = especie_repository.get_especie_by_id(especie_id)
-        if not especie:
-            return None
-        return {"id": str(especie._id), "nome": especie.nome}
+        return especie_repository.buscar_por_id(especie_id)
 
     async def atualizar(self, especie_id: str, dados: EspecieSchema) -> bool:
-        atualizado = especie_repository.update_especie(especie_id, dados.nome)
-        return atualizado
+        return especie_repository.atualizar(especie_id, dados.nome)
 
     async def deletar(self, especie_id: str) -> bool:
-        deletado = especie_repository.delete_especie(especie_id)
-        return deletado
+        return especie_repository.deletar(especie_id)
